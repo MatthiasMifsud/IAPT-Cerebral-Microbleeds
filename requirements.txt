@@ -1,0 +1,4 @@
+torch 
+torchvision
+nnunetv2
+python-dotenv
