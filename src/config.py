@@ -3,15 +3,14 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-print(ROOT_DIR)
 load_dotenv(ROOT_DIR / ".env") # loading env
 
-def _get_abs_path(var_name):
+def _get_abs_path(var_name) -> Path:
     """
-    This function allows the user to:
+    Retrieves the absolute paths from environmental variables.
 
-    * Enter a relative path if the data is within the project root.
-    * Enter an absolute path if the data is anywhere (even in other drives).
+    * Uses relative path to project root if path is relative.
+    * Uses absolute path if the path is explicitly defined.
     """
     path_str = os.getenv(var_name)
     if not path_str: # not found in .env
@@ -20,8 +19,6 @@ def _get_abs_path(var_name):
     path_obj = Path(path_str)
     if not path_obj.is_absolute(): # assuming now that it is relative to the root    
         path_obj = (ROOT_DIR / path_str).resolve()
-
-    print(f"Variable: '{var_name}' points to path: {path_obj}")
 
     return path_obj
 
