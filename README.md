@@ -18,6 +18,12 @@ pip install -r requirements.txt
 
 ### Preprocessing 
 
+During the preprocessing the dataset is converted to the nnUNet format
+and a metadata JSON file is generated. 
+
+Additionally we also have verification of the subjects in the dataset and
+after verification, a summary of the subjects is stored as JSON.
+
 ```
 python3 -m src.data_preprocessing.process
 ```

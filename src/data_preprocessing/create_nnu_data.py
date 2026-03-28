@@ -1,29 +1,18 @@
 import logging
 import nibabel as nib
 import json
+from ..utils.directories import _create_dirs
 from .. config import (
     ORIG_DATA, DATASET_DIR, IMAGES_DIR, 
-    LABELS_DIR, SUBJECT_PREFIX, DATASET_SIZE,
-    DATA_TYPE, MODALITY_SUFFIXES
+    LABELS_DIR, SUBJECT_PREFIX, DATA_TYPE, 
+    MODALITY_SUFFIXES, METADATA_FILE
 )
 
 nib.imageglobals.logger.setLevel(logging.WARNING) 
 logging.getLogger('nibabel').setLevel(logging.WARNING) # supressing warnings that are being fixed in the script
 logger = logging.getLogger(__name__)
 
-def _create_dirs() -> None:
-    created = []
-    for dir in [IMAGES_DIR, LABELS_DIR]:
-        if not dir.exists():
-            created.append(str(dir))
-        dir.mkdir(parents=True, exist_ok=True) #on each run it recreates the directory
-    
-    if created:
-        logger.info(f"ℹ️ Created {len(created)} directories: {', '.join(created)}")
-    else:
-        logger.info("ℹ️ Directories already exist")
-
-def _valdo_to_nnu() -> None:
+def _valdo_to_nnu() -> int:
     logger.info(f"ℹ️ Converting Valdo Dataset to fit nnUNet format")
 
     subjects = [f for f in ORIG_DATA.iterdir() if f.is_dir() and f.name.startswith(SUBJECT_PREFIX)] # 72 subjects
@@ -67,10 +56,9 @@ def _valdo_to_nnu() -> None:
     if failed_sub:
         logger.error(f"❌ Failed to process the following subjects: {failed_sub}")
 
-    if sub_count != DATASET_SIZE:
-        raise ValueError(f"Dataset size mismatch. Expected: {DATASET_SIZE}, Got: {sub_count}.")
+    return sub_count
 
-def _add_metadata() -> None:
+def _add_metadata(dataset_size) -> None:
     metadata = { 
         "channel_names": { 
             "0": "T1", 
@@ -81,11 +69,11 @@ def _add_metadata() -> None:
             "background": 0, 
             "microbleed": 1 
         }, 
-        "numTraining": DATASET_SIZE, 
+        "numTraining": dataset_size, 
         "file_ending": ".nii.gz" 
     }
 
-    meta_path = DATASET_DIR / "dataset.json"
+    meta_path = DATASET_DIR / METADATA_FILE
     with open(meta_path, 'w') as f:
         json.dump(metadata, f, indent=4)
     logger.info(f"ℹ️ Added metadata to {str(meta_path)}.")
@@ -93,11 +81,11 @@ def _add_metadata() -> None:
 def setup_dataset():
     logger.info(f"ℹ️ Starting nnUNet dataset setup...")
     # creating target data directory
-    _create_dirs()
+    _create_dirs([IMAGES_DIR, LABELS_DIR])
 
     # converting source data to target data
-    _valdo_to_nnu()
+    dataset_size = _valdo_to_nnu()
 
     # adding metadata
-    _add_metadata()
+    _add_metadata(dataset_size)
     logger.info("✅ Successfully finished setting up the nnUNet dataset.")

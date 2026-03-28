@@ -5,6 +5,9 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT_DIR / ".env") # loading env
 
+DATA_DIR = ROOT_DIR / "data"
+STATS_DIR = DATA_DIR / "statistics"
+
 def _get_abs_path(var_name) -> Path:
     """
     Retrieves the absolute paths from environmental variables.
@@ -33,5 +36,5 @@ LABELS_DIR = DATASET_DIR / "labelsTr"
 
 SUBJECT_PREFIX = "sub-"
 DATA_TYPE = ".nii.gz"
-DATASET_SIZE = 72
+METADATA_FILE = "dataset.json"
 MODALITY_SUFFIXES = ["0000", "0001", "0002"] 
