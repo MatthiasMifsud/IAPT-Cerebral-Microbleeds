@@ -1,8 +1,14 @@
 import logging
-import shutil
+import nibabel as nib
 import json
-from ..config import ORIG_DATA, DATASET_DIR, IMAGES_DIR, LABELS_DIR, SUBJECT_PREFIX, DATASET_SIZE
+from .. config import (
+    ORIG_DATA, DATASET_DIR, IMAGES_DIR, 
+    LABELS_DIR, SUBJECT_PREFIX, DATASET_SIZE,
+    DATA_TYPE, MODALITY_SUFFIXES
+)
 
+nib.imageglobals.logger.setLevel(logging.WARNING) 
+logging.getLogger('nibabel').setLevel(logging.WARNING) # supressing warnings that are being fixed in the script
 logger = logging.getLogger(__name__)
 
 def _create_dirs() -> None:
@@ -32,11 +38,11 @@ def _valdo_to_nnu() -> None:
         # creating mappings (orig name: dest path)
         mappings = {
             # label
-            f"{sub_id}_space-T2S_CMB.nii.gz": LABELS_DIR / f"VALDO_{id}.nii.gz",
+            f"{sub_id}_space-T2S_CMB{DATA_TYPE}": LABELS_DIR / f"VALDO_{id}{DATA_TYPE}",
             # images
-            f"{sub_id}_space-T2S_desc-masked_T1.nii.gz": IMAGES_DIR / f"VALDO_{id}_0000.nii.gz", # T1
-            f"{sub_id}_space-T2S_desc-masked_T2.nii.gz": IMAGES_DIR / f"VALDO_{id}_0001.nii.gz", # T2
-            f"{sub_id}_space-T2S_desc-masked_T2S.nii.gz": IMAGES_DIR / f"VALDO_{id}_0002.nii.gz", # T2S
+            f"{sub_id}_space-T2S_desc-masked_T1{DATA_TYPE}": IMAGES_DIR / f"VALDO_{id}_{MODALITY_SUFFIXES[0]}{DATA_TYPE}", # T1
+            f"{sub_id}_space-T2S_desc-masked_T2{DATA_TYPE}": IMAGES_DIR / f"VALDO_{id}_{MODALITY_SUFFIXES[1]}{DATA_TYPE}", # T2
+            f"{sub_id}_space-T2S_desc-masked_T2S{DATA_TYPE}": IMAGES_DIR / f"VALDO_{id}_{MODALITY_SUFFIXES[2]}{DATA_TYPE}", # T2S
         }
 
         # moving the files
@@ -44,7 +50,9 @@ def _valdo_to_nnu() -> None:
         for orig_name, target_path in mappings.items():
             file_path = sub_dir / orig_name
             if file_path.exists():
-                shutil.copy2(file_path, target_path)
+                # saving through nibabel to fix pixdim[0] qfac warning (warning fix)
+                img = nib.load(file_path)
+                nib.save(img, target_path)
                 mv_count += 1
             else:
                 logger.warning(f"⚠️ Missing file '{orig_name}' in '{sub_id}'")
@@ -92,4 +100,4 @@ def setup_dataset():
 
     # adding metadata
     _add_metadata()
-    logger.info("ℹ️ Successfully finished setting up the nnUNet dataset.")
+    logger.info("✅ Successfully finished setting up the nnUNet dataset.")

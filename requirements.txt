@@ -2,3 +2,5 @@ torch
 torchvision
 nnunetv2
 python-dotenv
+scipy
+numpy
