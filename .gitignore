@@ -1,8 +1,6 @@
 data/
 iapt_env/
-
 .DS_Store
-
 .env
 
 ####

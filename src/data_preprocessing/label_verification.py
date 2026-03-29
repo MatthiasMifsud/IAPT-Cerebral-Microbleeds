@@ -126,6 +126,10 @@ class LabelVerification:
         logger.warning(f"⚠️ Issues found: {len(self.corrupt_lbls)} corrupt labels, {len(self.misaligned_lbls)} misaligned labels, {len(self.missing_mod)} missing modalities")
 
     def generate_summary(self) -> None:
+        if not self.component_stats:
+            logger.warning("⚠️ No statistics detected.")
+            return
+
         stats = self.component_stats
         summary = {
             'total_subjects': len(stats),

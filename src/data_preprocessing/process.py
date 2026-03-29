@@ -11,8 +11,7 @@ logging.getLogger('nibabel.nifti1').setLevel(logging.WARNING)
 
 
 if __name__ == "__main__":
+    setup_dataset()
     verifier = LabelVerification()
-
-    # setup_dataset()
     verifier.verify_labels()
     verifier.generate_summary()
