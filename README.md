@@ -18,6 +18,8 @@ for model training.
 
 Create a virtual environment for dependancy management
 
+#### macOS / Linux
+
 ```shell
 # create and activate the environment
 python3.11 -m venv iapt_env
@@ -25,6 +27,20 @@ source iapt_env/bin/activate
 
 # upgrade pip and install the requirements
 pip install -upgrade pip
+pip install -r requirements.txt
+```
+
+#### Windows
+
+```shell
+# Create the environment
+python -m venv iapt_env
+
+# Activate the environment
+.\iapt_env\Scripts\activate
+
+# Upgrade pip and install requirements
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -55,7 +71,7 @@ the subjects in the dataset and after verification, a summary of the subjects
 is stored as JSON.
 
 ```shell
-python3 -m src.data_preprocessing.process
+python -m src.data_preprocessing.process
 ```
 
 * Outputs: Standardized dataset and a `stats.json` statistical summary.
@@ -68,7 +84,7 @@ and architecture configurations. It then preprocesses all 72 training cases
 accordingly. This step is CPU-bound, not GPU-bound.
 
 ```shell
-python3 -m src.models.plan_and_preprocess
+python -m src.models.plan_and_preprocess
 ```
 
 [!CAUTION] WARNING: This is highly CPU intensive.
@@ -79,7 +95,7 @@ Configure and train nnU-Net using its default 3D full-resolution
 configuration with five-fold cross-validation on the VALDO training set.
 
 ```shell
-python3 -m src.models.training
+python -m src.models.training
 ```
 
 [!CAUTION] WARNING: This is highly GPU intensive.
