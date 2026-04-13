@@ -1,21 +1,30 @@
 import logging
 import nibabel as nib
+from pathlib import Path
 import json
-from ..utils.directories import _create_dirs
-from .. config import (
-    ORIG_DATA, DATASET_DIR, IMAGES_DIR, 
-    LABELS_DIR, SUBJECT_PREFIX, DATA_TYPE, 
-    MODALITY_SUFFIXES, METADATA_FILE
+from .config import (
+    ORIG_DATA_PATH, SUBJECT_PREFIX, DATA_TYPE,
+    MODALITY_SUFFIXES, LABELS_PATH, IMAGES_PATH,
+    DATASET_PATH, METADATA_FILE, create_dirs
 )
 
+#logger configuration
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s - %(message)s',
+)
 nib.imageglobals.logger.setLevel(logging.WARNING) 
 logging.getLogger('nibabel').setLevel(logging.WARNING) # supressing warnings that are being fixed in the script
 logger = logging.getLogger(__name__)
 
-def _valdo_to_nnu() -> int:
+ROOT_DIR: Path = Path(__file__).resolve().parent.parent
+print(ROOT_DIR)
+DATA_DIR: Path = ROOT_DIR / "data"
+
+def valdo_to_nnu() -> int:
     logger.info(f"ℹ️ Converting Valdo Dataset to fit nnUNet format")
 
-    subjects = [f for f in ORIG_DATA.iterdir() if f.is_dir() and f.name.startswith(SUBJECT_PREFIX)] # 72 subjects
+    subjects = [f for f in ORIG_DATA_PATH.iterdir() if f.is_dir() and f.name.startswith(SUBJECT_PREFIX)] # 72 subjects
     
     sub_count = 0
     failed_sub = []
@@ -27,11 +36,11 @@ def _valdo_to_nnu() -> int:
         # creating mappings (orig name: dest path)
         mappings = {
             # label
-            f"{sub_id}_space-T2S_CMB{DATA_TYPE}": LABELS_DIR / f"VALDO_{id}{DATA_TYPE}",
+            f"{sub_id}_space-T2S_CMB{DATA_TYPE}": LABELS_PATH / f"VALDO_{id}{DATA_TYPE}",
             # images
-            f"{sub_id}_space-T2S_desc-masked_T1{DATA_TYPE}": IMAGES_DIR / f"VALDO_{id}_{MODALITY_SUFFIXES[0]}{DATA_TYPE}", # T1
-            f"{sub_id}_space-T2S_desc-masked_T2{DATA_TYPE}": IMAGES_DIR / f"VALDO_{id}_{MODALITY_SUFFIXES[1]}{DATA_TYPE}", # T2
-            f"{sub_id}_space-T2S_desc-masked_T2S{DATA_TYPE}": IMAGES_DIR / f"VALDO_{id}_{MODALITY_SUFFIXES[2]}{DATA_TYPE}", # T2S
+            f"{sub_id}_space-T2S_desc-masked_T1{DATA_TYPE}": IMAGES_PATH / f"VALDO_{id}_{MODALITY_SUFFIXES[0]}{DATA_TYPE}", # T1
+            f"{sub_id}_space-T2S_desc-masked_T2{DATA_TYPE}": IMAGES_PATH / f"VALDO_{id}_{MODALITY_SUFFIXES[1]}{DATA_TYPE}", # T2
+            f"{sub_id}_space-T2S_desc-masked_T2S{DATA_TYPE}": IMAGES_PATH / f"VALDO_{id}_{MODALITY_SUFFIXES[2]}{DATA_TYPE}", # T2S
         }
 
         # moving the files
@@ -58,7 +67,7 @@ def _valdo_to_nnu() -> int:
 
     return sub_count
 
-def _add_metadata(dataset_size) -> None:
+def add_metadata(dataset_size) -> None:
     metadata = { 
         "channel_names": { 
             "0": "T1", 
@@ -73,19 +82,17 @@ def _add_metadata(dataset_size) -> None:
         "file_ending": ".nii.gz" 
     }
 
-    meta_path = DATASET_DIR / METADATA_FILE
+    meta_path = DATASET_PATH / METADATA_FILE
     with open(meta_path, 'w') as f:
         json.dump(metadata, f, indent=4)
     logger.info(f"ℹ️ Added metadata to {str(meta_path)}.")
 
-def setup_dataset():
+if __name__ == "__main__":
     logger.info(f"ℹ️ Starting nnUNet dataset setup...")
     # creating target data directory
-    _create_dirs([IMAGES_DIR, LABELS_DIR])
-
+    create_dirs([IMAGES_PATH, LABELS_PATH])
     # converting source data to target data
-    dataset_size = _valdo_to_nnu()
-
+    dataset_size = valdo_to_nnu()
     # adding metadata
-    _add_metadata(dataset_size)
+    add_metadata(dataset_size)
     logger.info("✅ Successfully finished setting up the nnUNet dataset.")

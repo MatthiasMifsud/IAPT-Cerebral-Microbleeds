@@ -63,7 +63,7 @@ cd ..
 
 ## Execution
 
-### 1. Data Conversion & Verification
+### 1. Data Conversion
 
 During this step, the dataset is structured to the nnU-Net format and a 
 metadata JSON file is generated. Additionally we also have verification of 
@@ -71,7 +71,7 @@ the subjects in the dataset and after verification, a summary of the subjects
 is stored as JSON.
 
 ```shell
-python -m src.data_preprocessing.process
+python -m scripts.conversion
 ```
 
 * Outputs: Standardized dataset and a `stats.json` statistical summary.
