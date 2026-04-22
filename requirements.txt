@@ -1,0 +1,5 @@
+nnunetv2==2.7.0 
+nibabel==5.4.2 
+tqdm 
+scipy 
+ipywidgets
