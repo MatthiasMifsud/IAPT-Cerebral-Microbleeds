@@ -103,7 +103,7 @@ python -m src.models.training
 ---
 
 ## References & Citations
-
+* [Logger](https://github.com/MatthiasMifsud/Utility/blob/main/logger)
 * [nnUNet](https://github.com/mic-dkfz/nnunet?tab=readme-ov-file)
 * [Python Libraries for Medical Imaging](https://pycad.medium.com/the-best-python-libraries-for-medical-imaging-3327df061c0a)
 * [NiBabel Documentation](https://nipy.org/nibabel/reference/nibabel.dataobj_images.html)

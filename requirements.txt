@@ -3,3 +3,6 @@ nibabel==5.4.2
 tqdm 
 scipy 
 ipywidgets
+pandas
+numpy
+streamlit

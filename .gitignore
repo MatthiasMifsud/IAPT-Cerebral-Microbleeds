@@ -1,5 +1,4 @@
 data/
-data_sample/
 iapt_env/
 .DS_Store
 .env
