@@ -24,3 +24,13 @@ ALL_DASHBOARD_FOLDERS: list[Path] = [T2S_VOLUMES_PATH, GT_LABELS_PATH, PRED_PATH
 
 # files
 INFER_EVAL_FILE: str = "evaluation_results.csv"
+
+# extensions
+T2S_EXT: str = "_0002.nii.gz"
+NIFTI_EXT: str = ".nii.gz"
+PMAP_EXT: str = ".npz"
+
+# ui
+TP_HEX = "#00FF00"
+FP_HEX = "#FF0000"
+FN_HEX = "#FFEA00"

@@ -6,3 +6,4 @@ ipywidgets
 pandas
 numpy
 streamlit
+watchdog
