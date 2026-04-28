@@ -9,13 +9,25 @@ import matplotlib.pyplot as plt
 import scipy.ndimage as ndimage
 from utils.helpers import load_eval_data, nifti_loader, pmap_loader, classify, slice_renderer
 
+st.markdown("""
+    <style>
+        body, html { font-size: 14px !important; }
+        div[data-testid="metric-container"] { padding: 8px; }
+        h1 { font-size: 28px !important; }
+        h2 { font-size: 20px !important; }
+        h3 { font-size: 16px !important; }
+        .stMetricValue { font-size: 18px !important; }
+        .stMetricLabel { font-size: 12px !important; }
+    </style>
+""", unsafe_allow_html=True)
+
 st.set_page_config(
     page_title="Interactive Exploration Dashboard",
     layout='wide',
     initial_sidebar_state="expanded"
 )
 
-# init
+# ---- init ----
 if 'selected_sub' not in st.session_state:
     st.session_state.selected_sub = None
 if 'last_df_selection' not in st.session_state:
@@ -23,7 +35,8 @@ if 'last_df_selection' not in st.session_state:
 if "main_table_key" not in st.session_state:
     st.session_state["main_table_key"] = {"selection": {"rows": []}}
 
-# caching
+
+# ---- caching ----
 @st.cache_data(show_spinner=False) # no reload
 def get_eval_data():
     return load_eval_data()
@@ -36,6 +49,7 @@ def load_nifti(path: Path):
 def load_pmap(path: Path):
     return pmap_loader(path)
 
+# ---- synching logic ---- 
 def sync_to_table():
     new_sub = st.session_state.sub_selector
     st.session_state.selected_sub = new_sub
@@ -49,6 +63,7 @@ def sync_to_table():
 with st.spinner("Loading the Data..."):
     df = get_eval_data()
 
+# synching
 if "main_table_key" in st.session_state:
     current_table_selection = st.session_state["main_table_key"].get("selection", {}).get("rows", [])
     
@@ -62,6 +77,7 @@ if "main_table_key" in st.session_state:
             st.session_state.selected_sub = new_sub_id
             st.session_state.sub_selector = new_sub_id
 
+
 st.markdown("""
 <div class="dash-header">
     <h1>Interactive Exploration Dashboard</h1>
@@ -69,12 +85,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab_names = ["Per-Subject Viewer", "Dataset Summary", "Analytics"]
+tab_names = ["Per-Subject Viewer", "Dataset Summary", "Graph Analytics"]
 tab1, tab2, tab3 = st.tabs(tab_names)
 
 with tab1:
     st.write("")
-    c1, c2, c3, c4 = st.columns([1, 1, 0.5, 2], gap="medium")
+    c1, c2, c3, c4 = st.columns([0.8, 1.2, 0.5, 2], gap="medium")
     
     with c1:
         if not df.empty:
@@ -226,6 +242,7 @@ with tab1:
                 st.progress(precision)
 
 with tab2:
+    
     disp_df = df.copy()
     disp_df.rename(columns={
         "subject_id" : "Subject ID",
@@ -246,6 +263,18 @@ with tab2:
         "GT Count",
         "Predicted Count"
     ]]
+
+    st.subheader("Evaluation Overview")
+    numeric_cols = disp_df.select_dtypes(include=np.number).columns
+    agg = disp_df[numeric_cols].mean()
+
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("F1 Score (Avg)", f"{agg['F1 Score']:.3f}")
+    k2.metric("Sensitivity (Avg)", f"{agg['Sensitivity']:.3f}")
+    k3.metric("Dice (Avg)", f"{agg['Dice']:.3f}")
+    k4.metric("False Positives (Avg)", f"{agg['False Positives']:.1f}")
+    
+    st.divider()
 
     st.subheader("Evaluation Dataset")
     selection = st.dataframe(
@@ -270,39 +299,32 @@ with tab2:
         },
     )
 
-    st.divider()
-    st.subheader("Evaluation Overview")
-    numeric_cols = disp_df.select_dtypes(include=np.number).columns
-    agg = disp_df[numeric_cols].mean()
+with tab3:    
+    if not df.empty:
+        st.subheader("Microbleed Counts Per-subject")
 
-    k1, k2, k3, k4 = st.columns(4)
-    k1.metric("F1 Score (Avg)", f"{agg['F1 Score']:.3f}")
-    k2.metric("Sensitivity (Avg)", f"{agg['Sensitivity']:.3f}")
-    k3.metric("Dice (Avg)", f"{agg['Dice']:.3f}")
-    k4.metric("False Positives (Avg)", f"{agg['False Positives']:.1f}")
+        mb_counts = df['num_gt_microbleeds'].value_counts().sort_index()
+        
+        st.bar_chart(
+            mb_counts, 
+            x_label="Number of Microbleeds", 
+            y_label="Number of Subjects",
+            color="primary"
+        )
 
-with tab3:
-    st.subheader("Dataset-Level Analytics")
+        st.divider()
     
-    col_hist, col_bar = st.columns(2)
+        st.subheader("F1 Score Per-subject")
+        
+        st.bar_chart(
+            df[['subject_id', 'f1_score']], 
+            x="subject_id", 
+            y="f1_score", 
+            x_label="Subject ID", 
+            y_label="F1 Score",
+            sort="f1_score",
+            color="#ff4b4b"
+        )      
 
-    with col_hist:
-        st.markdown("**Microbleed Counts per Subject**")
-        # Histogram showing the distribution of bleed counts
-        fig_hist, ax_hist = plt.subplots()
-        ax_hist.hist(df['num_gt_microbleeds'], bins=max(10, df['num_gt_microbleeds'].max()), color='#4682B4', edgecolor='white')
-        ax_hist.set_xlabel("Number of Microbleeds")
-        ax_hist.set_ylabel("Frequency (Subjects)")
-        st.pyplot(fig_hist)
-
-    with col_bar:
-        st.markdown("**Subject F1 Performance (Worst to Best)**")
-        # sorted F1 scores
-        f1_sorted = df[['subject_id', 'f1_score']].sort_values(by='f1_score')
-        st.bar_chart(f1_sorted, x='subject_id', y='f1_score', color='#ff4b4b')
-
-    st.divider()
-    
-    # Extra Analytics: Scatter plot of GT vs Predicted
-    st.markdown("**Predicted vs Ground Truth Counts**")
-    st.scatter_chart(df, x='num_gt_microbleeds', y='num_pred_microbleeds', size=20)
+    else:
+        st.info("No data available to display analytics.")

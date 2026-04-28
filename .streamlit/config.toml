@@ -1,12 +1,20 @@
 [theme]
-backgroundColor = "#0e1117"
-secondaryBackgroundColor = "#262730"
-textColor = "#fafafa"
-primaryColor = "#1f77b4"
-font = "sans serif"
+base = "dark"
+
+# Core palette (optimized for medical imaging contrast)
+backgroundColor = "#030a0a"         
+secondaryBackgroundColor = "#0b3f43"   
+primaryColor = "#6dadbe"                 
+textColor = "#cedadb"                   
+
+font = "monospace"
+
+borderColor = "#30363d"
+dataframeHeaderBackgroundColor = "#21262d"
+dataframeBorderColor = "#30363d"
 
 [browser]
 gatherUsageStats = false
 
 [client]
-# toolbarMode = "minimal"
+toolbarMode = "minimal"

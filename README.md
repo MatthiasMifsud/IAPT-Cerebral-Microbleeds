@@ -109,5 +109,5 @@ python -m src.models.training
 * [Python Libraries for Medical Imaging](https://pycad.medium.com/the-best-python-libraries-for-medical-imaging-3327df061c0a)
 * [NiBabel Documentation](https://nipy.org/nibabel/reference/nibabel.dataobj_images.html)
 * Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). [nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation.](https://www.nature.com/articles/s41592-020-01008-z) Nature methods, 18(2), 203-211
-
+* [ui color](https://octet.design/colors/user-interfaces/dark-ui-design/)
 ---
