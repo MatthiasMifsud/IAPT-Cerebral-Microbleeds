@@ -228,7 +228,20 @@ with tab1:
             gt_count = int(ndimage.label((gt_lbl > 0).astype(int))[1])
             pred_count = int(ndimage.label((pmap >= threshold).astype(int))[1])
 
-            st.info(f"GT microbleeds: **{gt_count}** | Predicted: **{pred_count}**")
+            st.markdown(f"""
+                <div style="
+                    background-color: rgba(109, 173, 190, 0.5);
+                    color:#cedadb;
+                    margin-top: 10px;
+                    padding:10px 10px;
+                    border-radius:6px;
+                    text-align:center;
+                ">
+                GT microbleeds: <b>{gt_count}</b>\t|\tPredicted: <b>{pred_count}</b>
+                </div>
+                """, unsafe_allow_html=True
+            )
+
             st.divider()
 
             with st.container(border=True):
