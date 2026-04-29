@@ -68,7 +68,6 @@ def load_eval_data():
 
 # using logic from the iapt.ipynb evaluation scripts
 def classify(prob_map: np.ndarray, gt: np.ndarray, threshold: float):
-    # 1. Preprocessing and Connected Components
     bin_preds = (prob_map > threshold).astype(np.int32)
     bin_gt = (gt > 0).astype(np.int32)
     structure = np.ones((3, 3, 3), dtype=np.uint8)
@@ -76,35 +75,33 @@ def classify(prob_map: np.ndarray, gt: np.ndarray, threshold: float):
     pred_labels, n_preds = label(bin_preds, structure=structure)
     gt_labels, n_gts = label(bin_gt, structure=structure)
 
-    # 2. Sensitivity (Which GTs did we find?)
-    # Find IDs of GT objects that have at least one prediction voxel inside them
+    # getting gt ids for any overlap with pred voxels(i.e our tp)
     overlapping_gt_ids = np.unique(gt_labels[bin_preds > 0])
     overlapping_gt_ids = overlapping_gt_ids[overlapping_gt_ids > 0]
     
-    tp = len(overlapping_gt_ids) # Each found GT counts as 1 TP
-    fn = n_gts - tp              # Any GT not hit is a False Negative
-
-    # 3. False Positives (Which predictions hit ONLY background?)
-    # Find IDs of prediction objects that overlap with the GT mask
+    tp = len(overlapping_gt_ids)
+    fn = n_gts - tp # fn is how much we missed true preds in comp with the gts
+    
+    # getting pred id for any overlap with gt voxels
     overlapping_pred_ids = np.unique(pred_labels[bin_gt > 0])
     overlapping_pred_ids = overlapping_pred_ids[overlapping_pred_ids > 0]
     
-    # FP = Total predicted objects minus those that hit a GT
-    fp = n_preds - len(overlapping_pred_ids)
+    fp = n_preds - len(overlapping_pred_ids) # difference is fp
 
-    # 4. Visualization Masks
-    # TP Mask: GT objects that were successfully hit
+    total_pred = tp + fp
+
+    # updating tp mask
     tp_mask = np.isin(gt_labels, overlapping_gt_ids)
     
-    # FP Mask: Predicted objects that hit nothing
+    # fp mask update
     all_pred_ids = np.arange(1, n_preds + 1)
     fp_ids = np.setdiff1d(all_pred_ids, overlapping_pred_ids)
     fp_mask = np.isin(pred_labels, fp_ids)
     
-    # FN Mask: GT objects that were missed
+    # fn mask update
     fn_mask = np.logical_and(bin_gt > 0, ~tp_mask)
 
-    return tp_mask.astype(np.int32), fp_mask.astype(np.int32), fn_mask.astype(np.int32), tp, fp, fn
+    return tp_mask.astype(np.int32), fp_mask.astype(np.int32), fn_mask.astype(np.int32), tp, fp, fn, n_gts, total_pred
 
 def _create_overlay_cmap(hex_color: str, alpha: float = 0.7) -> ListedColormap:
     color = to_rgba(hex_color, alpha=alpha)
