@@ -7,7 +7,7 @@ secondaryBackgroundColor = "#0b3f43"
 primaryColor = "#6dadbe"                 
 textColor = "#cedadb"                   
 
-font = "monospace"
+# font = "sans-serif"
 
 borderColor = "#30363d"
 dataframeHeaderBackgroundColor = "#21262d"

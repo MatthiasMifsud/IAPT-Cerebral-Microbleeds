@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import streamlit as st
 from utils import config as cf
@@ -11,13 +10,13 @@ from utils.helpers import load_eval_data, nifti_loader, pmap_loader, classify, s
 
 st.markdown("""
     <style>
-        body, html { font-size: 14px !important; }
+        body, html { font-size: 16px !important; }
         div[data-testid="metric-container"] { padding: 8px; }
-        h1 { font-size: 28px !important; }
-        h2 { font-size: 20px !important; }
-        h3 { font-size: 16px !important; }
-        .stMetricValue { font-size: 18px !important; }
-        .stMetricLabel { font-size: 12px !important; }
+        h1 { font-size: 40px !important; }
+        h2 { font-size: 28px !important; }
+        h3 { font-size: 22px !important; }
+        .stMetricValue { font-size: 20px !important; }
+        .stMetricLabel { font-size: 14px !important; }
     </style>
 """, unsafe_allow_html=True)
 
