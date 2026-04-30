@@ -63,6 +63,23 @@ def sync_to_table():
         st.session_state["main_table_key"] = {"selection": {"rows": [row_idx]}}
         st.session_state.last_df_selection = [row_idx]
 
+def mask_metric(label, value, color):
+    st.metric(label, value)
+
+    st.markdown(
+        f"""
+        <div style="
+            width: 50%;
+            border-bottom: 2px solid {color};
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        ">
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
 with st.spinner("Loading the Data..."):
     df = get_eval_data()
 
@@ -227,9 +244,12 @@ with tab1:
             # Detection metrics section
             st.markdown("**Detection Metrics**")
             m1, m2, m3 = st.columns(3)
-            m1.metric("True Positives", tp)
-            m2.metric("False Positives", fp)
-            m3.metric("False Negatives", fn)
+            with m1:
+                mask_metric("True Positives", tp, cf.TP_HEX)
+            with m2:
+                mask_metric("False Positives", fp, cf.FP_HEX)
+            with m3:
+                mask_metric("False Negatives", fn, cf.FN_HEX)
 
             st.markdown(f"""
                 <div style="
