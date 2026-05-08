@@ -5,7 +5,6 @@ from pathlib import Path
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import scipy.ndimage as ndimage
 from utils.helpers import load_eval_data, nifti_loader, pmap_loader, classify, slice_renderer
 
 st.markdown("""
@@ -206,7 +205,7 @@ with tab1:
         with col_img:
             n_slices = t2s.shape[axis]
             mid = n_slices // 2
-            slice_idx = st.slider("**Slice**", 0, n_slices-1, mid, key="slice_slider", help="Navigate through different slices of the brain scan along the selected viewing axis")
+            slice_idx = st.slider("**Slice**", 0, n_slices-1, mid, key=f"slice_slider_{sub_id}", help="Navigate through different slices of the brain scan along the selected viewing axis")
 
             tp_mask, fp_mask, fn_mask, tp, fp, fn, gt_count, pred_count = classify(pmap, gt_lbl, threshold)
 
