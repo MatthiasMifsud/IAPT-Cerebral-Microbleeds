@@ -3,6 +3,20 @@
 ![Python Version](https://img.shields.io/badge/python-3.11%2B-blue)
 ![Framework](https://img.shields.io/badge/framework-nnU--Net_v2-green)
 
+## Overview
+
+This project benchmarks cerebral microbleed detection on brain MRI using the VALDO dataset and nnU-Net v2. It includes:
+
+- **Task 1:** Dataset preparation, nnU-Net training, inference, and evaluation.
+- **Task 2:** Interactive Streamlit dashboard for visualising the model output and performance.
+
+---
+
+## Documentation
+
+- [**Task 1: Baseline Pipeline**](docs/shared_core.md) data preparation, model training, inference, and evaluation workflow
+- [**Task 2: Interactive Exploration Dashboard**](docs/interactive_exploration_dashboard.md) — Web-based visualization and performance analysis tool
+
 ---
 
 ## Getting Started
@@ -11,8 +25,7 @@
 
 - **Python:** 3.11+
 
-- **Hardware:** High-performance CPU for preprocessing; High-performance GPU
-for model training.
+- **Hardware:** High-performance CPU for preprocessing; High-performance GPU for model training.
 
 ### 1. Environment Setup
 
@@ -44,70 +57,60 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 2. Integrating nnU-Net v2
+---
 
-This project makes use of the nnU-Net Framework and is added to the project 
-itself to allow for adjustemnts of the framework if needed.
+## Quick Start: Interactive Dashboard
 
-```shell
-# clone the repository
-git clone https://github.com/MIC-DKFZ/nnUNet.git
+After model training and inference are complete, explore the results interactively:
 
-# install its requirements
-cd nnUNet
-pip install -e .
-cd ..
+```bash
+# Ensure your environment is activated
+source iapt_env/bin/activate  # macOS/Linux
+
+# Run the dashboard
+streamlit run dashboard.py
+```
+
+The dashboard will open in your browser at `http://localhost:8501` and provides the following tabs:
+
+- **Per-Subject Viewer:** Slice-by-slice exploration with real-time probability threshold adjustment.
+- **Dataset Summary:** Aggregate statistics and sortable performance table.
+- **Graph Analytics:** Visualizations of model performance.
+
+For comprehensive documentation including classification algorithm details, setup instructions, and performance analysis, see [Interactive Exploration Dashboard](docs/interactive_exploration_dashboard.md).
+
+---
+
+## Project Structure
+
+```
+CMB_Detection/
+├── dashboard.py                # Interactive Exploration Dashboard
+├── requirements.txt            # Python dependencies
+├── README.md                   # This documentation file
+├── docs/
+│   ├── shared_core.md          # Task 1: Shared Core documentation
+│   └── interactive_exploration_dashboard.md  # Task 2: Interactive Dashboard documentation
+├── data/
+│   ├── nnUNet_raw/             # Raw dataset in nnU-Net format
+│   ├── nnUNet_preprocessed/    # Preprocessed training data
+│   ├── nnUNet_results/         # Trained models and training logs
+│   ├── nnUNet_inference/       # Inference outputs
+│   └── dashboard_data/         # Processed data for visualization
+├── notebooks/
+│   └── iapt.ipynb              # The entirety of task 1 code
+├── utils/                      # Utility modules
+│   ├── config.py               # Configuration and paths
+│   ├── helpers.py              # Data loading and visualization
+│   ├── logger.py               # Logging utilities
+│   └── reorganise.py           # Data reorganization scripts
+└── iapt_env/                   # Python virtual environment
 ```
 
 ---
 
-## Execution
+## Dataset
 
-### 1. Data Conversion
+The **VALDO Dataset** consists of 72 subjects with T2-weighted brain MRI scans and expert-annotated cerebral microbleed labels.
 
-During this step, the dataset is structured to the nnU-Net format and a 
-metadata JSON file is generated. Additionally we also have verification of 
-the subjects in the dataset and after verification, a summary of the subjects 
-is stored as JSON.
-
-```shell
-python -m scripts.conversion
-```
-
-* Outputs: Standardized dataset and a `stats.json` statistical summary.
-
-### 2. Model Planning & Preprocessing
-
-This command analyses the dataset and generates a preprocessing plan. 
-It computes target spacing, intensity normalisation statistics, patch sizes,
-and architecture configurations. It then preprocesses all 72 training cases
-accordingly. This step is CPU-bound, not GPU-bound.
-
-```shell
-python -m src.models.plan_and_preprocess
-```
-
-[!CAUTION] WARNING: This is highly CPU intensive.
-
-### 3. Model Training
-
-Configure and train nnU-Net using its default 3D full-resolution 
-configuration with five-fold cross-validation on the VALDO training set.
-
-```shell
-python -m src.models.training
-```
-
-[!CAUTION] WARNING: This is highly GPU intensive.
-
----
-
-## References & Citations
-* [Streamlit Doc](https://docs.streamlit.io)
-* [Logger](https://github.com/MatthiasMifsud/Utility/blob/main/logger)
-* [nnUNet](https://github.com/mic-dkfz/nnunet?tab=readme-ov-file)
-* [Python Libraries for Medical Imaging](https://pycad.medium.com/the-best-python-libraries-for-medical-imaging-3327df061c0a)
-* [NiBabel Documentation](https://nipy.org/nibabel/reference/nibabel.dataobj_images.html)
-* Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). [nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation.](https://www.nature.com/articles/s41592-020-01008-z) Nature methods, 18(2), 203-211
-* [ui color](https://octet.design/colors/user-interfaces/dark-ui-design/)
----
+For detailed dataset information, see [Task 1: Baseline Pipeline](docs/shared_core.md).
