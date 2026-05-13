@@ -40,7 +40,7 @@ To streamline setup, you only need to provide the raw nnU-Net outputs:
 1. Place `nnUNet_raw` and `nnUNet_results` in the `data/` directory
 2. Upon running the dashboard the code automatically extracts and reorganises the model outputs into the dashboard-compatible format  (`data/dashboard_data/`), so you don't need to manually populate the data folders above.
 
-**NOTE: `The data/dashboard_data/` will only be populated as long as it is initially empty before running the UI.**
+**NOTE: `The data/dashboard_data/` will only be created and populated as long as the `dashboard_data/` folder does not exist before running the UI. Otherwise the project assumes that the data has already been populated.**
 
 3. The dashboard_data will result in the following data output structures:
 

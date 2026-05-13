@@ -114,3 +114,11 @@ CMB_Detection/
 The **VALDO Dataset** consists of 72 subjects with T2-weighted brain MRI scans and expert-annotated cerebral microbleed labels.
 
 For detailed dataset information, see [Task 1: Baseline Pipeline](docs/shared_core.md).
+
+---
+
+## Research Report
+
+For a detailed walkthrough on the research please visit the [Report](/docs/report.pdf).
+
+---

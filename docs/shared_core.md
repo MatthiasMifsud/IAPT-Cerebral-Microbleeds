@@ -34,8 +34,6 @@ cd ..
 
 ## Pipeline Execution
 
-## Pipeline Execution
-
 ### 1. Data Conversion
 
 Loads VALDO MRI scans and annotations, validates consistency, converts to nnU-Net format.
