@@ -3,6 +3,7 @@ iapt_env/
 .DS_Store
 .env
 project_brief/
+nocommit/
 
 ####
 #Python ignore
