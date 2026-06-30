@@ -1,4 +1,5 @@
-data/
+data/*
+!data/README.md
 iapt_env/
 .DS_Store
 .env

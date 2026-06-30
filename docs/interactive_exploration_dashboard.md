@@ -10,7 +10,7 @@ The **Interactive Exploration Dashboard** is a web-based visualization tool buil
 
 ### Prerequisites
 - Python 3.11+
-- Virtual environment activated (see main README)
+- Virtual environment activated (see the [README](../README.md))
 - All dependencies installed from `requirements.txt`
 
 ### Running the Dashboard
@@ -33,22 +33,44 @@ The **Interactive Exploration Dashboard** is a web-based visualization tool buil
 
 ### Data Requirements
 
+The submitted repository does not include the MRI data, trained outputs, or generated dashboard data because these files are too large. Before launching the dashboard, create the required folders under `data/` using your own data or outputs from the notebook pipeline.
 
 #### Minimal Setup with Data Reorganization
 
 To streamline setup, you only need to provide the raw nnU-Net outputs:
-1. Place `nnUNet_raw` and `nnUNet_results` in the `data/` directory
-2. Upon running the dashboard the code automatically extracts and reorganises the model outputs into the dashboard-compatible format  (`data/dashboard_data/`), so you don't need to manually populate the data folders above.
+1. Place `nnUNet_raw` and `nnUNet_inference` in the `data/` directory.
+2. Confirm the folders contain the expected files:
 
-**NOTE: `The data/dashboard_data/` will only be created and populated as long as the `dashboard_data/` folder does not exist before running the UI. Otherwise the project assumes that the data has already been populated.**
+   ```text
+   data/
+   ├── nnUNet_raw/
+   │   └── Dataset001_VALDO/
+   │       ├── imagesTr/
+   │       │   ├── VALDO_101_0002.nii.gz
+   │       │   └── ...
+   │       └── labelsTr/
+   │           ├── VALDO_101.nii.gz
+   │           └── ...
+   └── nnUNet_inference/
+       ├── VALDO_101.nii.gz
+       ├── VALDO_101.npz
+       ├── evaluation_results.csv
+       └── ...
+   ```
 
-3. The dashboard_data will result in the following data output structures:
+3. Upon running the dashboard the code automatically extracts and reorganises the model outputs into the dashboard-compatible format (`data/dashboard_data/`), so you do not need to manually populate the folders below.
+
+**Note:** `data/dashboard_data/` is only created and populated if it does not already exist before running the dashboard. Otherwise, the project assumes the dashboard data has already been prepared.
+
+4. The `dashboard_data` folder will result in the following data output structure:
 
 - `data/dashboard_data/volumes/` - T2S brain volumes
 - `data/dashboard_data/labels/` - Ground truth microbleed labels
 - `data/dashboard_data/predictions/` - Model predictions
 - `data/dashboard_data/probabilities/` - Probability maps (.npz files)
 - `data/dashboard_data/evaluation_results.csv` - Evaluation metrics
+
+If you change or replace the source data, delete `data/dashboard_data/` and rerun `streamlit run dashboard.py` so the dashboard rebuilds the derived files.
 
 ---
 

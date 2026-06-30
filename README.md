@@ -29,7 +29,7 @@ This project benchmarks cerebral microbleed detection on brain MRI using the VAL
 
 ### 1. Environment Setup
 
-Create a virtual environment for dependancy management
+Create a virtual environment for dependency management.
 
 #### macOS / Linux
 
@@ -39,7 +39,7 @@ python3.11 -m venv iapt_env
 source iapt_env/bin/activate
 
 # upgrade pip and install the requirements
-pip install -upgrade pip
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -56,6 +56,32 @@ python -m venv iapt_env
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+---
+
+## Data Setup
+
+The dataset and generated nnU-Net outputs are not included in this submission because they are too large. The repository keeps a near-empty `data/` folder with setup instructions in [`data/datat_setup.md`](data/datat_setup.md).
+
+To run the dashboard with your own files, recreate the expected folder structure:
+
+```text
+data/
+    ├── nnUNet_raw/
+    │       └── Dataset001_VALDO/
+    │           ├── imagesTr/          # T2S volumes, e.g. VALDO_101_0002.nii.gz
+    │           └── labelsTr/          # Ground truth labels, e.g. VALDO_101.nii.gz
+    └── nnUNet_inference/          # Model outputs
+            ├── VALDO_101.nii.gz       # Prediction mask
+            ├── VALDO_101.npz          # Probability map
+            └── evaluation_results.csv # Per-subject metrics
+```
+
+When `streamlit run dashboard.py` is started, the dashboard automatically creates `data/dashboard_data/` from these folders if it does not already exist. 
+
+If you replace the data later, delete `data/dashboard_data/` before running the dashboard again so it can be regenerated.
+
+For full training and evaluation from scratch, run the pipeline in [`notebooks/iapt.ipynb`](notebooks/iapt.ipynb) as described in [Task 1: Baseline Pipeline](docs/shared_core.md).
 
 ---
 
@@ -92,6 +118,7 @@ CMB_Detection/
 │   ├── shared_core.md          # Task 1: Shared Core documentation
 │   └── interactive_exploration_dashboard.md  # Task 2: Interactive Dashboard documentation
 ├── data/
+│   ├── data_setup.md               # Data setup instructions; actual data is excluded
 │   ├── nnUNet_raw/             # Raw dataset in nnU-Net format
 │   ├── nnUNet_preprocessed/    # Preprocessed training data
 │   ├── nnUNet_results/         # Trained models and training logs
