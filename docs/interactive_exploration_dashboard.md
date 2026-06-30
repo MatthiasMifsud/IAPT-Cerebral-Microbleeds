@@ -11,7 +11,7 @@ The **Interactive Exploration Dashboard** is a web-based visualization tool buil
 ### Prerequisites
 - Python 3.11+
 - Virtual environment activated (see the [README](../README.md))
-- All dependencies installed from `requirements.txt`
+- All dependencies installed from [`requirements.txt`](../requirements.txt)
 
 ### Running the Dashboard
 

@@ -61,27 +61,27 @@ pip install -r requirements.txt
 
 ## Data Setup
 
-The dataset and generated nnU-Net outputs are not included in this submission because they are too large. The repository keeps a near-empty `data/` folder with setup instructions in [`data/datat_setup.md`](data/datat_setup.md).
+The dataset and generated nnU-Net outputs are not included in this submission because they are too large. The repository keeps a near-empty `data/` folder with setup instructions in [`data/data_setup.md`](data/data_setup.md).
 
-To run the dashboard with your own files, recreate the expected folder structure:
+For dashboard-only use, recreate the expected nnU-Net raw and inference folders:
 
 ```text
 data/
-    ├── nnUNet_raw/
-    │       └── Dataset001_VALDO/
-    │           ├── imagesTr/          # T2S volumes, e.g. VALDO_101_0002.nii.gz
-    │           └── labelsTr/          # Ground truth labels, e.g. VALDO_101.nii.gz
-    └── nnUNet_inference/          # Model outputs
-            ├── VALDO_101.nii.gz       # Prediction mask
-            ├── VALDO_101.npz          # Probability map
-            └── evaluation_results.csv # Per-subject metrics
+├── nnUNet_raw/
+│   └── Dataset001_VALDO/
+│       ├── imagesTr/              # T2S volumes, e.g. VALDO_101_0002.nii.gz
+│       └── labelsTr/              # Ground truth labels, e.g. VALDO_101.nii.gz
+└── nnUNet_inference/              # Model outputs
+    ├── VALDO_101.nii.gz           # Prediction mask
+    ├── VALDO_101.npz              # Probability map
+    └── evaluation_results.csv     # Per-subject metrics
 ```
 
 When `streamlit run dashboard.py` is started, the dashboard automatically creates `data/dashboard_data/` from these folders if it does not already exist. 
 
 If you replace the data later, delete `data/dashboard_data/` before running the dashboard again so it can be regenerated.
 
-For full training and evaluation from scratch, run the pipeline in [`notebooks/iapt.ipynb`](notebooks/iapt.ipynb) as described in [Task 1: Baseline Pipeline](docs/shared_core.md).
+For full training and evaluation from scratch, place the original VALDO Task 2 download at `data/original_dataset/Task2/`, then run the pipeline in [`notebooks/iapt.ipynb`](notebooks/iapt.ipynb) as described in [Task 1: Baseline Pipeline](docs/shared_core.md).
 
 ---
 
@@ -103,7 +103,7 @@ The dashboard will open in your browser at `http://localhost:8501` and provides 
 - **Dataset Summary:** Aggregate statistics and sortable performance table.
 - **Graph Analytics:** Visualizations of model performance.
 
-For comprehensive documentation including classification algorithm details, setup instructions, and performance analysis, see [Interactive Exploration Dashboard](docs/interactive_exploration_dashboard.md).
+For comprehensive documentation including classification algorithm details, setup instructions, and performance analysis, see [Task 2: Interactive Exploration Dashboard](docs/interactive_exploration_dashboard.md).
 
 ---
 
@@ -118,7 +118,8 @@ CMB_Detection/
 │   ├── shared_core.md          # Task 1: Shared Core documentation
 │   └── interactive_exploration_dashboard.md  # Task 2: Interactive Dashboard documentation
 ├── data/
-│   ├── data_setup.md               # Data setup instructions; actual data is excluded
+│   ├── data_setup.md           # Data setup instructions; actual data is excluded
+│   ├── original_dataset/       # Original VALDO Task 2 data for full pipeline runs
 │   ├── nnUNet_raw/             # Raw dataset in nnU-Net format
 │   ├── nnUNet_preprocessed/    # Preprocessed training data
 │   ├── nnUNet_results/         # Trained models and training logs

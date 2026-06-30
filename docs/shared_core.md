@@ -18,8 +18,9 @@ All code is executed in the `notebooks/iapt.ipynb` notebook.
 
 **Prerequisites:**
 - Python 3.11+
-- NVIDIA GPU (24GB+ VRAM recommended)
+- GPU (24GB+ VRAM recommended)
 - Virtual environment activated
+- Original VALDO Task 2 data placed at `data/original_dataset/Task2/`
 
 **nnU-Net Installation:**
 
@@ -38,6 +39,17 @@ cd ..
 
 Loads VALDO MRI scans and annotations, validates consistency, converts to nnU-Net format.
 
+**Input structure:**
+```
+data/original_dataset/Task2/
+├── sub-101/
+│   ├── sub-101_space-T2S_desc-masked_T1.nii.gz
+│   ├── sub-101_space-T2S_desc-masked_T2.nii.gz
+│   ├── sub-101_space-T2S_desc-masked_T2S.nii.gz
+│   └── sub-101_space-T2S_desc-masked_CMB.nii.gz
+└── ...
+```
+
 **Output structure:**
 ```
 data/nnUNet_raw/Dataset001_VALDO/
@@ -51,7 +63,7 @@ data/nnUNet_raw/Dataset001_VALDO/
 └── stats.json
 ```
 
-**Execute in notebook:** Run the "Data Conversion" cell in `notebooks/iapt.ipynb`
+**Execute in notebook:** Run the "Data Conversion" cell in [`notebooks/iapt.ipynb`](../notebooks/iapt.ipynb)
 
 ---
 
@@ -69,7 +81,7 @@ data/nnUNet_preprocessed/Dataset001_VALDO/
 └── ...
 ```
 
-**Execute in notebook:** Run the "Planning & Preprocessing" cell in `notebooks/iapt.ipynb`
+**Execute in notebook:** Run the "Planning & Preprocessing" cell in [`notebooks/iapt.ipynb`](../notebooks/iapt.ipynb)
 
 ---
 
@@ -87,7 +99,7 @@ data/nnUNet_results/Dataset001_VALDO/nnUNetTrainer__nnUNetPlans__3d_fullres/
 └── fold_4/...
 ```
 
-**Execute in notebook:** Run the "Model Training" cell in `notebooks/iapt.ipynb`
+**Execute in notebook:** Run the "Model Training" cell in [`notebooks/iapt.ipynb`](../notebooks/iapt.ipynb)
 
 ---
 
@@ -99,7 +111,7 @@ Computes metrics on validation predictions. Generates evaluation CSV and probabi
 - `data/dashboard_data/evaluation_results.csv` — Per-subject metrics
 - Prediction probability maps
 
-**Execute in notebook:** Run the "Evaluation" cell in `notebooks/iapt.ipynb`
+**Execute in notebook:** Run the "Evaluation" cell in [`notebooks/iapt.ipynb`](../notebooks/iapt.ipynb)
 
 ---
 
@@ -117,4 +129,3 @@ See [Task 2: Interactive Exploration Dashboard](interactive_exploration_dashboar
 
 ## Next Steps
 Use Interactive Dashboard to explore results
-
